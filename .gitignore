@@ -1,0 +1,11 @@
+*.egg-info/
+.DS_Store
+.env
+.pytest_cache/
+.venv
+.venv.nosync/
+.venv/
+__pycache__/
+data/*.sqlite
+data/ofac_*.csv
+dist/
