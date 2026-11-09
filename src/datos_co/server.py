@@ -21,7 +21,11 @@ mcp = FastMCP(
     ),
 )
 
-RO = {"readOnlyHint": True, "openWorldHint": True}
+# Pistas MCP (annotations) declaradas de forma explícita en las cuatro dimensiones.
+# RO: herramientas que consultan servicios externos por HTTP GET (SECOP, OFAC, RUES, Rama Judicial).
+# RO_LOCAL: herramientas que solo leen el índice local SQLite.
+RO = {"readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True}
+RO_LOCAL = {"readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": False}
 
 
 @mcp.tool(annotations=RO)
@@ -96,7 +100,7 @@ async def procesos_actuaciones(radicado: str, pagina: int = 1) -> dict:
         return error("Rama Judicial", str(e))
 
 
-@mcp.tool(annotations={"readOnlyHint": True, "openWorldHint": False})
+@mcp.tool(annotations=RO_LOCAL)
 def jurisprudencia_buscar_local(texto: str, tipo: str = "", limite: int = 10) -> dict:
     """Busca en el índice local de jurisprudencia y normas cargadas por el titular desde fuentes oficiales.
 
@@ -113,7 +117,7 @@ def jurisprudencia_buscar_local(texto: str, tipo: str = "", limite: int = 10) ->
     )
 
 
-@mcp.tool(annotations={"readOnlyHint": True, "openWorldHint": False})
+@mcp.tool(annotations=RO_LOCAL)
 def indice_local_estado() -> dict:
     """Cantidad de documentos del índice local por tipo."""
     return store.estadisticas()
